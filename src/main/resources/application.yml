@@ -1,0 +1,15 @@
+server:
+  port: 8080
+  context-path: /ap
+security:
+  basic:
+    enabled: false
+
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/activiti522?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull
+    username: root
+    password: admin
+    driver-class-name: com.mysql.jdbc.Driver
+  thymeleaf:
+    cache: false

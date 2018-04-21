@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8"></meta>
+    <title>模型管理</title>
+</head>
+<script th:inline="javascript" type="text/javascript">
+    /*<![CDATA[*/
+        var ctx = /*[[@{/}]]*/ '';
+    /*]]>*/
+</script>
+
+<body>
+<div id="top">
+</div>
+<h2>模型列表</h2>
+<button id="addModelBtn">绘制流程</button>
+<table border="1" id="model-list">
+    <tr>
+        <td>模型编号</td>
+        <td>模型名称</td>
+        <td>版本</td>
+        <td>创建时间</td>
+        <td>操作</td>
+    </tr>
+</table>
+<hr></hr>
+<h2>部署列表</h2>
+<table border="1" id="deployment-list">
+    <tr>
+        <td>编号</td>
+        <td>名称</td>
+        <td>部署时间</td>
+        <td>操作</td>
+    </tr>
+
+</table>
+<script th:src="@{/modeler/lib/js/jquery-1.10.2.min.js}"></script>
+<script th:src="@{/modeler/lib/js/jquery.cookie.js}"></script>
+<script th:src="@{/modeler/js/ajax-util.js}"></script>
+
+<script>
+$(function() {
+    AJAX.GET(ctx+"models", null
+            , function (result) {
+                $(result.rows.list).each(function(index,item){
+                    var tr = '<tr>\
+                                    <td>'+item.id+'</td>\
+                                    <td>'+item.name+'</td>\
+                                    <td>'+item.version+'</td>\
+                                    <td>'+item.createTime+'</td>\
+                                    <td>\
+                                    <a href="'+ctx+'modeler/modeler.html?modelId='+item.id+'">编辑</a>\
+                                        <a href="javascript: AJAX.DELETE(\''+ctx+'models/'+item.id+'\')">删除</a>\
+                                        <a href="javascript: AJAX.POST(\''+ctx+'models/'+item.id+'/deployment\')">发布</a>\
+                                        </td>\
+                                </tr>';
+                    $("#model-list").append(tr);
+                });
+            });
+
+   AJAX.GET(ctx+"deployments", null
+            , function (result) {
+                $(result.rows.list).each(function (index, item) {
+                    var tr = '<tr>\
+                                        <td>' + item.id + '</td>\
+                                        <td>' + item.name + '</td>\
+                                        <td>' + item.deploymentTime + '</td>\
+                                        <td>\
+                                            <a href="javascript: AJAX.DELETE(\'' + ctx + 'deployments/' + item.id + '\')">删除</a>\
+                                            </td>\
+                                    </tr>';
+                    $("#deployment-list").append(tr);
+                });
+            });
+
+    $('#addModelBtn').bind("click", function () {
+        AJAX.POST(ctx+'models/newModel',null,function(result){
+            if(result.modelId){
+                window.location.href = ctx+'modeler/modeler?modelId='+result.modelId;
+            }
+        });
+    });
+})
+</script>
+</body>
+</html>
